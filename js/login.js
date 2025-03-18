@@ -33,7 +33,7 @@ function showForm(formType) {
             localStorage.setItem("access_token", data.access);
             localStorage.setItem("access_username", data.username);
             localStorage.setItem("access_profilePicture", data.profile_pic);
-            window.location.href = "home.html";
+            window.location.href = "index.html";
 
         } catch (error) {
             showAlert("❌ Server is not responding. Please try again later.");

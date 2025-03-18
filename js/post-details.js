@@ -11,7 +11,7 @@ const token = localStorage.getItem('access_token');
     if (!postId){
         showAlert('🔐 something went wrong.');
         setTimeout(() => {
-            window.location.href = "home.html";
+            window.location.href = "index.html";
         }, 2000);
     }
 

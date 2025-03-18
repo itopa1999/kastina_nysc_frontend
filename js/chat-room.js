@@ -12,7 +12,7 @@ const groupName = params.get("groupName");
 if (!groupName) {
     showAlert('🔐 Something went wrong.');
     setTimeout(() => {
-        window.location.href = "home.html";
+        window.location.href = "index.html";
     }, 2000);
 }
 

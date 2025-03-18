@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (!username){
         showAlert('🔐 something went wrong.');
         setTimeout(() => {
-            window.location.href = "home.html";
+            window.location.href = "index.html";
         }, 2000);
     }
 

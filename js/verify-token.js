@@ -30,7 +30,7 @@
         showAlert('✅ ' +data.message);
         localStorage.removeItem('access_email');
         setTimeout(() => {
-            window.location.href = "home.html";
+            window.location.href = "index.html";
         }, 4000);
 
 
