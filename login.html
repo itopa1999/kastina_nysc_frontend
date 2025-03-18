@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Signup Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="form-container">
+                    <!-- <span class="brand-logo">6 G T</span> -->
+                    
+                    <!-- Login Form -->
+                    <div class="form-section active" id="loginForm">
+                        <h2 class="welcome-text">Welcome back 🥂,</h2>
+                        <p class="sub-text">Login to continue</p>
+
+                        <form id="loginForm" class="login-Form">
+                            <div class="mb-3">
+                                <input type="text" name="username" class="form-control" placeholder="Email / Username" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <input type="password" name="password" class="form-control" placeholder="Password" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-success">
+                                Login →
+                            </button>
+                            <a href="forget-password.html" class="forgot-password">Forgot password?</a>
+                        </form>
+
+                        <p class="text-center mt-3">Don't have an account? 
+                            <a class="toggle-link" onclick="showForm('signup')">Sign up here</a>
+                        </p>
+                    </div>
+
+                    <!-- Signup Form -->
+                    <div class="form-section" id="signupForm">
+                        <h2 class="welcome-text">Welcome 🥂,</h2>
+                        <p class="sub-text">Sign up to continue</p>
+
+                        <form id="signupForm" class="signup-Form">
+                            <div class="mb-3">
+                                <input type="email" name="email" class="form-control"  placeholder="Email" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <input type="text" name="username" class="form-control"  placeholder="Username" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <input type="text" name="state_code" class="form-control"  placeholder="State Code" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <input type="password" name="password" class="form-control"  placeholder="Password" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-success">
+                                Let's go →
+                            </button>
+                        </form>
+
+                        <p class="text-center mt-3">Already have an account? 
+                            <a class="toggle-link" onclick="showForm('login')">Login here</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-alert" id="customAlert">
+        <div class="alert-progress"></div>
+        <span class="alert-content"></span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/login.js"></script>
+    
+</body>
+</html>

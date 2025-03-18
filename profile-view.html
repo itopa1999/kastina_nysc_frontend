@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Chat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <style>
+    
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-btn" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+        <div class="chat-container">
+            <!-- Groups Panel -->
+            <div class="groups-panel" id="groupsPanel">
+              
+            </div>
+            
+
+            <!-- Chat Area -->
+            <div class="chat-area">
+                <div class="chat-header">
+                    <h5 class="mb-0">NYSC Main Group</h5>
+                    <small class="text-muted">245 members online</small>
+                </div>
+
+                <div class="chat-messages">
+                    <!-- Messages -->
+                    
+                </div>
+
+                <div class="chat-input">
+                    <div class="input-container">
+                        <textarea placeholder="Type your message..." rows="1"></textarea>
+                        <button class="send-button">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <div class="typing-indicator" id="typingIndicator">
+        <span id="typingText"></span> is typing...
+    </div>
+
+    <div class="custom-alert" id="customAlert">
+        <div class="alert-progress"></div>
+        <span class="alert-content"></span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/chat-room.js"></script>
+    <script>
+
+
+        // Get chat messages container
+    const chatMessages = document.querySelector('.chat-messages');
+
+    // System message functions
+    function addSystemMessage(text, type) {
+        const systemDiv = document.createElement('div');
+        systemDiv.className = 'system-message';
+        
+        if(type === 'join') {
+            systemDiv.innerHTML = `<span class="user-joined">${text}</span> joined the chat`;
+        } else if(type === 'leave') {
+            systemDiv.innerHTML = `<span class="user-left">${text}</span> left the chat`;
+        } else {
+            systemDiv.textContent = text;
+        }
+
+        chatMessages.appendChild(systemDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Simulate user joining
+    addSystemMessage('Sarah', 'join');
+    
+    // Simulate user leaving
+    setTimeout(() => {
+        addSystemMessage('Mike', 'leave');
+    }, 3000);
+
+    let typingTimeout;
+        const typingIndicator = document.getElementById('typingIndicator');
+        const typingText = document.getElementById('typingText');
+        
+        textarea.addEventListener('input', () => {
+            typingIndicator.style.display = 'block';
+            typingText.textContent = 'John';
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                typingIndicator.style.display = 'none';
+            }, 1000);
+        });
+    </script>
+
+    <script>
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const groupsPanel = document.getElementById('groupsPanel');
+
+        menuToggle.addEventListener('click', () => {
+            groupsPanel.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && 
+                !e.target.closest('#groupsPanel') && 
+                !e.target.closest('#menuToggle')) {
+                groupsPanel.classList.remove('active');
+            }
+        });
+
+        // Prevent menu close when clicking inside
+        groupsPanel.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    </script>
+</body>
+</html>

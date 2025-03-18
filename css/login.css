@@ -1,0 +1,141 @@
+body {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.form-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.form-section {
+    transition: all 0.3s ease;
+}
+
+.form-section:not(.active) {
+    display: none;
+    opacity: 0;
+}
+
+.brand-logo {
+    color: #0b7a23;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    display: block;
+}
+
+.btn-success {
+    width: 100%;
+    padding: 0.75rem;
+    font-weight: 600;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.welcome-text {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #6c757d;
+}
+
+.sub-text {
+    color: #6c757d;
+    margin-bottom: 2rem;
+}
+
+.forgot-password {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    color: #6c757d;
+}
+.toggle-link{
+    cursor: pointer;
+}
+
+
+
+.custom-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #ffffff;
+    color: #313030;
+    border-radius: 8px;
+    display: none;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 9999;
+    max-width: 300px;
+    width: fit-content;
+    animation: slideIn 0.3s ease-out;
+    overflow: hidden;
+}
+
+.custom-alert.active {
+    display: flex;
+}
+
+.alert-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: #4CAF50;
+    width: 100%;
+    animation: progress 6s linear;
+}
+
+.alert-content {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow: hidden;
+    margin-right: 25px;
+}
+
+@media (max-width: 768px) {
+    .custom-alert {
+        max-width: 150px;
+        padding: 12px 20px;
+        top: 10px;
+        right: 10px;
+    }
+
+    .alert-content {
+        font-size:smaller
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes progress {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
