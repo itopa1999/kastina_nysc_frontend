@@ -1,11 +1,4 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-        showAlert('🔐 Login is required.');
-        setTimeout(() => {
-            window.location.href = "login.html";
-        }, 2000);
-    }
 
     const params = new URLSearchParams(window.location.search);
     const username = params.get("username");
@@ -18,10 +11,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById('user-info').innerHTML = '🧑‍🦱@corper_'+username +' post'
 
+    const initialUrl = `http://127.0.0.1:8000/forum/api/user/get/user/${username}/posts/`;
+    let nextPageUrl = initialUrl;
 
-    async function fetchPosts() {
+    window.loadMorePosts = function(e) {
+        if (e) e.preventDefault();
+        if (nextPageUrl) {
+            fetchPosts(nextPageUrl);
+        }
+    }
+
+
+    async function fetchPosts(url = initialUrl) {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/forum/api/post/get/user/${username}/posts/`, {
+            const response = await fetch(url, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -46,47 +49,65 @@ document.addEventListener("DOMContentLoaded", function() {
             // Parse the JSON response
 
             const data = await response.json();
-            displayPosts(data);
+            displayPosts(data, url !== initialUrl);
+            nextPageUrl = data.next;
+
+            // Update View More link visibility
+            const viewMoreLink = document.getElementById('view-more-posts');
+            viewMoreLink.style.display = nextPageUrl ? 'block' : 'none';
+
+
+
         } catch (error) {
             showAlert('❌ Error fetching posts:', error);
         }
     }
 
-    function displayPosts(posts) {
+    document.getElementById('view-more-link').addEventListener('click', loadMorePosts);
+
+
+    function displayPosts(posts, append = false) {
         const forYouFeed = document.getElementById('for-you-feed');
         const communitiesFeed = document.getElementById('communities-feed');
-    
-        // Clear both feeds
-        forYouFeed.innerHTML = '';
-        communitiesFeed.innerHTML = '';
-    
-        // Separate the posts by category
-        const forYouPosts = posts.results.filter(post => post.category.toLowerCase() !== 'cds update');
-        const cdsUpdatePosts = posts.results.filter(post => post.category.toLowerCase() === 'cds update');
-    
-        // Handle "For You" feed
-        if (forYouPosts.length === 0) {
-            const noPostsMessage = document.createElement('div');
-            noPostsMessage.classList.add('no-posts-message');
-            noPostsMessage.innerHTML = '<p>No posts available in For You.</p>';
-            forYouFeed.appendChild(noPostsMessage);
-        } else {
-            forYouPosts.forEach(post => {
-                const postCard = createPostCard(post);
-                forYouFeed.appendChild(postCard);
+        
+        if(append){
+            [forYouFeed, communitiesFeed].forEach(feed => {
+                const noPostsMessage = feed.querySelector('.no-posts-message');
+                if (noPostsMessage) noPostsMessage.remove();
             });
+        }else{
+            // Clear both feeds
+            forYouFeed.innerHTML = '';
+            communitiesFeed.innerHTML = '';
         }
-    
-        // Handle "Cds Update" feed
-        if (cdsUpdatePosts.length === 0) {
+        // Separate the posts by category
+        const newForYouPosts = posts.results.filter(post => post.category.toLowerCase() !== 'cds update');
+        const newCdsUpdatePosts = posts.results.filter(post => post.category.toLowerCase() === 'cds update');
+        
+        // Handle For You feed
+        handleFeedPopulation(forYouFeed, newForYouPosts, append, 'For You');
+        
+        // Handle CDS Update feed
+        handleFeedPopulation(communitiesFeed, newCdsUpdatePosts, append, 'Cds Update');
+
+        // Update View More link visibility
+        const viewMoreLink = document.getElementById('view-more-posts');
+        viewMoreLink.style.display = nextPageUrl ? 'block' : 'none';
+        
+    }
+
+    function handleFeedPopulation(feedElement, posts, append, feedName) {
+        
+        // Handle "For You" feed
+        if (!append && posts.length === 0) {
             const noPostsMessage = document.createElement('div');
             noPostsMessage.classList.add('no-posts-message');
-            noPostsMessage.innerHTML = '<p>No posts available in Cds Update.</p>';
-            communitiesFeed.appendChild(noPostsMessage);
+            noPostsMessage.innerHTML = `<p>No posts available in ${feedName}.</p>`;
+            feedElement.appendChild(noPostsMessage);
         } else {
-            cdsUpdatePosts.forEach(post => {
+            posts.forEach(post => {
                 const postCard = createPostCard(post);
-                communitiesFeed.appendChild(postCard);
+                feedElement.appendChild(postCard);
             });
         }
     }
@@ -135,7 +156,9 @@ document.addEventListener("DOMContentLoaded", function() {
                  -ms-overflow-style: none;" id="comments-list-${post.id}"></div>
                 <div class="new-comment" style="display: flex; align-items: center; gap: 8px;">
                     <input id="new-comment-${post.id}" placeholder="Write a comment...">
-                    <button onclick="postComment(${post.id})">Comment</button>
+                    <button onclick="postComment(${post.id})" id="commentBtn-${post.id}">Comment 
+                        <span class="spinner-border spinner-border-sm d-none" id="commentSpinner-${post.id}" role="status" aria-hidden="true"></span>
+                    </button>
                 </div>
             </div>
         `;
@@ -170,22 +193,33 @@ document.addEventListener("DOMContentLoaded", function() {
             showAlert('❌ comment cannot be empty')
             return;
         }
-        const response = await fetch(`http://127.0.0.1:8000/forum/api/home/create/post/comment/`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ content: newCommentContent, post: postId})
-        });
+        const commentButton = document.getElementById(`commentBtn-${postId}`);
+        const commentSpinner = document.getElementById(`commentSpinner-${postId}`);
 
+        commentButton.disabled = true;
+        commentSpinner.classList.remove("d-none");
+        try{
+            const response = await fetch(`http://127.0.0.1:8000/forum/api/home/create/post/comment/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content: newCommentContent, post: postId})
+            });
 
-        if (response.ok) {
-            fetchComments(postId);
-            document.getElementById(`new-comment-${postId}`).value = '';
-            showAlert('✅ commented')
-        } else {
-            showAlert('❌ Failed to post comment');
+            if (response.ok) {
+                fetchComments(postId);
+                document.getElementById(`new-comment-${postId}`).value = '';
+                showAlert('✅ commented')
+            } else {
+                showAlert('❌ Failed to post comment');
+            }
+        }catch (error) {
+            showAlert("❌ Server is not responding. Please try again later.");
+        }finally {
+            commentButton.disabled = false;
+            commentSpinner.classList.add("d-none");
         }
     }
 

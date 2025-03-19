@@ -10,7 +10,51 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/jpeg" href="imgs/fav.jpeg">
     <style>
-       
+        .search-result-item {
+            background: var(--item-bg);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .search-result-item:hover {
+            transform: translateX(4px);
+        }
+
+        .compact-avatar {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .result-type-badge {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .user-email {
+            font-size: 0.9rem;
+            color: #6c757d;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .post-content {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .timestamp {
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
     </style>
 
 </head>
@@ -63,104 +107,46 @@
         </nav>
 
         <div class="premium-banner">
-            NYSC (National Youth Service Corps) 
-            <p>Upgrade for a completely ad-free, smoother experience</p>
-            <button class="btn btn-light w-100">Subscribe</button>
+            <h5>NYSC (National Youth Service Corps) </h5>  
+            <p>Service and Humility.</p>
+            <button class="btn btn-light w-100">Motto!!!</button>
         </div>
     </div>
     <main>
+        <div class="search-container">
+            <form class="search-box">
+                <input type="text" 
+                       class="search-input" 
+                       name="query"
+                       placeholder="Search @corper or post ..."
+                       aria-label="Search" required>
+                <button type="submit" class="search-button">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+        </div>
         <div class="feed-header">
             <div class="feed-tabs">
-                    <button class="feed-tab active" data-feed="for-you">Post</button>
-                    <button class="feed-tab" data-feed="communities">CDS Post</button>
-                <button class="feed-tab" data-feed="userInfo" id="user-info">sd</button>
-
+                    <button class="feed-tab active" data-feed="for-you">@corpers</button>
+                    <button class="feed-tab" data-feed="communities">Posts</button>
             </div>
         </div>
-
+        <div class="container" style="background-color: rgb(255, 255, 255);">
         <div class="feed-content active" id="for-you-feed">
-            
-            
-            <hr>
+            <div class="row mb-3" id="users-content">
+
+            </div>
 
         </div>
 
         <!-- Communities Feed -->
         <div class="feed-content" id="communities-feed">
-           
-            <hr>
+            <div class="row" id="posts-content">
+                
+            </div>
+      
         </div>
-
-        <div class="feed-content" id="userInfo-feed">
-                <div class="row g-4">
-                    <!-- Posts Card -->
-                    <div class="col-12 col-sm-12 col-xl-12">
-                        <div class="stat-card p-4">
-                            <div class="d-flex align-items-center gap-4">
-                                <div class="stat-icon bg-primary bg-opacity-10 text-primary">
-                                    <i class="bi bi-file-post"></i>
-                                </div>
-                                <div>
-                                    <div class="count" id="posts-count">0</div>
-                                    <div class="stat-label">Total Posts</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-    
-                    <!-- Comments Card -->
-                    <div class="col-12 col-sm-12 col-xl-12">
-                        <div class="stat-card p-4">
-                            <div class="d-flex align-items-center gap-4">
-                                <div class="stat-icon bg-success bg-opacity-10 text-success">
-                                    <i class="bi bi-chat-dots"></i>
-                                </div>
-                                <div>
-                                    <div class="count" id="comments-count">0</div>
-                                    <div class="stat-label">Total Comments</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-    
-                    <!-- Likes Card -->
-                    <div class="col-12 col-sm-12 col-xl-12">
-                        <div class="stat-card p-4">
-                            <div class="d-flex align-items-center gap-4">
-                                <div class="stat-icon bg-danger bg-opacity-10 text-danger">
-                                    <i class="bi bi-heart"></i>
-                                </div>
-                                <div>
-                                    <div class="count" id="likes-count">0</div>
-                                    <div class="stat-label">Total Likes</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-    
-                    <!-- Views Card -->
-                    <div class="col-12 col-sm-12 col-xl-12">
-                        <div class="stat-card p-4">
-                            <div class="d-flex align-items-center gap-4">
-                                <div class="stat-icon bg-warning bg-opacity-10 text-warning">
-                                    <i class="bi bi-eye"></i>
-                                </div>
-                                <div>
-                                    <div class="count" id="views-count">0</div>
-                                    <div class="stat-label">Total Views</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
         </div>
-
-        <div id="view-more-posts" style="text-align: center; margin: 20px; display: none;">
-            <a href="#" id="view-more-link" style="color: #797979; text-decoration: underline; cursor: pointer;">
-                View More Posts
-            </a>
-        </div>
-
     </main>
 
     <!-- Right Sidebar -->
@@ -203,7 +189,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/profile-view.js"></script>
+    <script src="js/search.js"></script>
     <script>
         
     </script>

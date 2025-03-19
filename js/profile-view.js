@@ -1,83 +1,104 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-        showAlert('🔐 Login is required.');
-        setTimeout(() => {
-            window.location.href = "login.html";
-        }, 2000);
+document.getElementById('user-info').innerHTML = '🧑‍🦱@corper_'+username +' activities'
+
+const initialUrl = `http://127.0.0.1:8000/forum/api/user/get/user/${username}/posts/`;
+let nextPageUrl = initialUrl;
+
+window.loadMorePosts = function(e) {
+    if (e) e.preventDefault();
+    if (nextPageUrl) {
+        fetchPosts(nextPageUrl);
     }
-    async function fetchPosts() {
-        try {
-            const response = await fetch('http://127.0.0.1:8000/forum/api/home/get/posts/', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            })
-
-            // Check if the response is successful
-            if (!response.ok) {
-                showAlert('❌ Failed to fetch posts:', response.statusText);
-                return;
+}
+async function fetchPosts(url = initialUrl) {
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
+        })
 
-            if (response.status === 401) {
-                showAlert('❌ login required');
-                setTimeout(() => {
-                    window.location.href = "login.html";
-                }, 2000);
-                return;
-            }
-
-            // Parse the JSON response
-
-            const data = await response.json();
-            displayPosts(data);
-        } catch (error) {
-            showAlert('❌ Error fetching posts:', error);
+        // Check if the response is successful
+        if (!response.ok) {
+            showAlert('❌ Failed to fetch posts:', response.statusText);
+            return;
         }
-    }
 
-    function displayPosts(posts) {
-        const forYouFeed = document.getElementById('for-you-feed');
-        const communitiesFeed = document.getElementById('communities-feed');
+        if (response.status === 401) {
+            showAlert('❌ login required');
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 2000);
+            return;
+        }
+
+        // Parse the JSON response
+
+        const data = await response.json();
+        displayPosts(data, url !== initialUrl);
+        nextPageUrl = data.next;
+
+        // Update View More link visibility
+        const viewMoreLink = document.getElementById('view-more-posts');
+        viewMoreLink.style.display = nextPageUrl ? 'block' : 'none';
+
+
+    } catch (error) {
+        showAlert('❌ Error fetching posts:', error);
+    }
+}
+
+document.getElementById('view-more-link').addEventListener('click', loadMorePosts);
+
+
+function displayPosts(posts, append = false) {
+    const forYouFeed = document.getElementById('for-you-feed');
+    const communitiesFeed = document.getElementById('communities-feed');
     
+    if(append){
+        [forYouFeed, communitiesFeed].forEach(feed => {
+            const noPostsMessage = feed.querySelector('.no-posts-message');
+            if (noPostsMessage) noPostsMessage.remove();
+        });
+    }else{
         // Clear both feeds
         forYouFeed.innerHTML = '';
         communitiesFeed.innerHTML = '';
-    
-        // Separate the posts by category
-        const forYouPosts = posts.results.filter(post => post.category.toLowerCase() !== 'cds update');
-        const cdsUpdatePosts = posts.results.filter(post => post.category.toLowerCase() === 'cds update');
-    
-        // Handle "For You" feed
-        if (forYouPosts.length === 0) {
-            const noPostsMessage = document.createElement('div');
-            noPostsMessage.classList.add('no-posts-message');
-            noPostsMessage.innerHTML = '<p>No posts available in For You.</p>';
-            forYouFeed.appendChild(noPostsMessage);
-        } else {
-            forYouPosts.forEach(post => {
-                const postCard = createPostCard(post);
-                forYouFeed.appendChild(postCard);
-            });
-        }
-    
-        // Handle "Cds Update" feed
-        if (cdsUpdatePosts.length === 0) {
-            const noPostsMessage = document.createElement('div');
-            noPostsMessage.classList.add('no-posts-message');
-            noPostsMessage.innerHTML = '<p>No posts available in Cds Update.</p>';
-            communitiesFeed.appendChild(noPostsMessage);
-        } else {
-            cdsUpdatePosts.forEach(post => {
-                const postCard = createPostCard(post);
-                communitiesFeed.appendChild(postCard);
-            });
-        }
     }
+    // Separate the posts by category
+    const newForYouPosts = posts.results.filter(post => post.category.toLowerCase() !== 'cds update');
+    const newCdsUpdatePosts = posts.results.filter(post => post.category.toLowerCase() === 'cds update');
     
+    // Handle For You feed
+    handleFeedPopulation(forYouFeed, newForYouPosts, append, 'For You');
+    
+    // Handle CDS Update feed
+    handleFeedPopulation(communitiesFeed, newCdsUpdatePosts, append, 'Cds Update');
+
+    // Update View More link visibility
+    const viewMoreLink = document.getElementById('view-more-posts');
+    viewMoreLink.style.display = nextPageUrl ? 'block' : 'none';
+    
+}
+
+function handleFeedPopulation(feedElement, posts, append, feedName) {
+    
+    // Handle "For You" feed
+    if (!append && posts.length === 0) {
+        const noPostsMessage = document.createElement('div');
+        noPostsMessage.classList.add('no-posts-message');
+        noPostsMessage.innerHTML = `<p>No posts available in ${feedName}.</p>`;
+        feedElement.appendChild(noPostsMessage);
+    } else {
+        posts.forEach(post => {
+            const postCard = createPostCard(post);
+            feedElement.appendChild(postCard);
+        });
+    }
+}
+
+
     function createPostCard(post) {
         const postCard = document.createElement('div');
         postCard.classList.add('post-card');
@@ -122,7 +143,9 @@ document.addEventListener("DOMContentLoaded", function() {
                  -ms-overflow-style: none;" id="comments-list-${post.id}"></div>
                 <div class="new-comment" style="display: flex; align-items: center; gap: 8px;">
                     <input id="new-comment-${post.id}" placeholder="Write a comment...">
-                    <button onclick="postComment(${post.id})">Comment</button>
+                    <button onclick="postComment(${post.id})" id="commentBtn-${post.id}">Comment 
+                        <span class="spinner-border spinner-border-sm d-none" id="commentSpinner-${post.id}" role="status" aria-hidden="true"></span>
+                    </button>
                 </div>
             </div>
         `;
@@ -157,87 +180,35 @@ document.addEventListener("DOMContentLoaded", function() {
             showAlert('❌ comment cannot be empty')
             return;
         }
-        const response = await fetch(`http://127.0.0.1:8000/forum/api/home/create/post/comment/`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ content: newCommentContent, post: postId})
-        });
+        const commentButton = document.getElementById(`commentBtn-${postId}`);
+        const commentSpinner = document.getElementById(`commentSpinner-${postId}`);
 
-        if (response.ok) {
-            fetchComments(postId);
-            document.getElementById(`new-comment-${postId}`).value = '';
-            showAlert('✅ commented')
-        } else {
-            showAlert('❌ Failed to post comment');
-        }
-    }
-
-
-    async function fetchTrending() {
-        try {
-            const response = await fetch('http://127.0.0.1:8000/forum/api/home/get/trending/posts/', {
-                method: 'GET',
+        commentButton.disabled = true;
+        commentSpinner.classList.remove("d-none");
+        try{
+            const response = await fetch(`http://127.0.0.1:8000/forum/api/home/create/post/comment/`, {
+                method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            })
-
-            // Check if the response is successful
-            if (!response.ok) {
-                showAlert('❌ Failed to fetch trending posts:', response.statusText);
-                return;
-            }
-
-            // Parse the JSON response
-
-            const data = await response.json();
-            displayTrendingPosts(data);
-        } catch (error) {
-            showAlert('❌ Error fetching trending posts:', error);
-        }
-    }
-
-    function displayTrendingPosts(posts){
-        const feedContainer = document.getElementById('trendingCard');
-        feedContainer.innerHTML = '';
-        if (posts.results.length === 0) {
-            const noPostsMessage = document.createElement('div');
-            noPostsMessage.classList.add('no-posts-message');
-            noPostsMessage.innerHTML = '<p>No trending posts available.</p>';
-            feedContainer.appendChild(noPostsMessage);
-            return;
-        }
-    
-        posts.results.forEach(post => {
-            const postCard = document.createElement('div');
-            postCard.classList.add('trending-item', 'mb-3');
-            postCard.innerHTML = `
-                <small class="text-mute">@${post.user} . ${post.category} · Trending</small>
-                <div style="cursor:pointer;" class="fw-bold trending-view-detail">${post.short_content}</div>
-                <small>${formatNumber(post.total_comment)} comments</small>
-                <hr>
-            `;
-            
-            const detailsButton = postCard.querySelector('.trending-view-detail');
-            detailsButton.addEventListener('click', () => {
-                const postId = post.id;  // Get the post ID
-                window.location.href = `post-details.html?id=${postId}`;
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content: newCommentContent, post: postId})
             });
-            
-    
-            feedContainer.appendChild(postCard);
-        });
 
-        
+            if (response.ok) {
+                fetchComments(postId);
+                document.getElementById(`new-comment-${postId}`).value = '';
+                showAlert('✅ commented')
+            } else {
+                showAlert('❌ Failed to post comment');
+            }
+        }catch (error) {
+            showAlert("❌ Server is not responding. Please try again later.");
+        }finally {
+            commentButton.disabled = false;
+            commentSpinner.classList.add("d-none");
+        }
     }
-
-
-    fetchTrending();
-
 
 
     // Function to fetch comments of a post
@@ -354,72 +325,99 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
 
-    async function fetchCategories() {
+
+
+
+
+
+    async function fetchTrending() {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/forum/api/category/`, { 
+            const response = await fetch('http://127.0.0.1:8000/forum/api/home/get/trending/posts/', {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
                 }
-            });
-    
+            })
+
+            // Check if the response is successful
             if (!response.ok) {
-                showAlert("❌  to fetch categories");
+                showAlert('❌ Failed to fetch trending posts:', response.statusText);
+                return;
             }
-    
-            const categories = await response.json();
-            
-            const categoryContainer = document.querySelector(".category-options");
-            categoryContainer.innerHTML = ""; // Clear previous options
-    
-            categories.results.forEach((category, index) => {
-                const categoryElement = document.createElement("div");
-                categoryElement.innerHTML = `
-                    <input type="radio" name="category" id="category-${category.id}" class="category-radio" value="${category.id}" ${index === 0 ? "checked" : ""}>
-                    <label for="category-${category.id}" class="category-label">🎯 ${category.name}</label>
-                `;
-                categoryContainer.appendChild(categoryElement);
-            });
+
+            // Parse the JSON response
+
+            const data = await response.json();
+            displayTrendingPosts(data);
         } catch (error) {
-            console.error("Error fetching categories:", error);
+            showAlert('❌ Error fetching trending posts:', error);
         }
     }
-        
 
-    fetchCategories()
-
-
-
-    // Handle post submission
-    document.querySelector('.post-button-main').addEventListener('click', async function () {
-        const postContent = document.querySelector('.post-textarea').value;
-        const selectedCategoryId = document.querySelector('input[name="category"]:checked').value;
-
-        const postData = {
-            content: postContent,
-            category: selectedCategoryId
-        };
-
-        try {
-            const response = await fetch("http://127.0.0.1:8000/forum/api/post/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify(postData),
+    function displayTrendingPosts(posts){
+        const feedContainer = document.getElementById('trendingCard');
+        feedContainer.innerHTML = '';
+        if (posts.results.length === 0) {
+            const noPostsMessage = document.createElement('div');
+            noPostsMessage.classList.add('no-posts-message');
+            noPostsMessage.innerHTML = '<p>No trending posts available.</p>';
+            feedContainer.appendChild(noPostsMessage);
+            return;
+        }
+    
+        posts.results.forEach(post => {
+            const postCard = document.createElement('div');
+            postCard.classList.add('trending-item', 'mb-3');
+            postCard.innerHTML = `
+                <small class="text-mute">@${post.user} . ${post.category} · Trending</small>
+                <div style="cursor:pointer;" class="fw-bold trending-view-detail">${post.short_content}</div>
+                <small>${formatNumber(post.total_comment)} comments</small>
+                <hr>
+            `;
+            
+            const detailsButton = postCard.querySelector('.trending-view-detail');
+            detailsButton.addEventListener('click', () => {
+                const postId = post.id;  // Get the post ID
+                window.location.href = `post-details.html?id=${postId}`;
             });
+            
+    
+            feedContainer.appendChild(postCard);
+        });
 
-            if (!response.ok){
-                showAlert("❌ Failed to post");
+        
+    }
+
+    fetchTrending()
+
+    document.getElementById('user-info').addEventListener('click', async function() {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/forum/api/user/get/user/profile/${username}/activities/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            // Check if the response is successful
+            if (!response.ok) {
+                showAlert('❌ Failed to fetch trending posts:', response.statusText);
+                return;
             }
 
-            showAlert("✅ Posted");
-            fetchPosts()
-            bootstrap.Modal.getInstance(document.getElementById("postModal")).hide();
+            // Parse the JSON response
+
+            const data = await response.json();
+            console.log(data);
+            // Populate the data
+            document.getElementById('posts-count').textContent = formatNumber(data.total_posts);
+            document.getElementById('comments-count').textContent = formatNumber(data.total_comments);
+            document.getElementById('likes-count').textContent = formatNumber(data.total_likes);
+            document.getElementById('views-count').textContent = formatNumber(data.total_views);
         } catch (error) {
-            showAlert("❌ Error posting:", error);
+            showAlert('❌ Error fetching trending posts:', error);
         }
     });
 
@@ -427,35 +425,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-    
+// Feed switching functionality
+const feedTabs = document.querySelectorAll('.feed-tab');
+const feedContents = document.querySelectorAll('.feed-content');
 
+feedTabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+        // Remove active classes
+        feedTabs.forEach(t => t.classList.remove('active'));
+        feedContents.forEach(c => c.classList.remove('active'));
 
-
-    // Feed switching functionality
-    const feedTabs = document.querySelectorAll('.feed-tab');
-    const feedContents = document.querySelectorAll('.feed-content');
-
-    feedTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            // Remove active classes
-            feedTabs.forEach(t => t.classList.remove('active'));
-            feedContents.forEach(c => c.classList.remove('active'));
-
-            // Add active classes
-            this.classList.add('active');
-            const feedType = this.dataset.feed;
-            document.getElementById(`${feedType}-feed`).classList.add('active');
-        });
+        // Add active classes
+        this.classList.add('active');
+        const feedType = this.dataset.feed;
+        document.getElementById(`${feedType}-feed`).classList.add('active');
     });
-
-
 });
-
-
-
-
-
-
-
-
-

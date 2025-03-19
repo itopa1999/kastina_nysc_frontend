@@ -31,7 +31,7 @@
         localStorage.removeItem('access_email');
         setTimeout(() => {
             window.location.href = "index.html";
-        }, 4000);
+        }, 3000);
 
 
     } catch (error) {

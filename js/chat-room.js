@@ -1,4 +1,3 @@
-const token = localStorage.getItem('access_token');
 const myUsername = localStorage.getItem('access_username');
 if (!myUsername) {
     showAlert('🔐 Login is required or username missing.');

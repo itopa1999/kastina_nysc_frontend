@@ -6,7 +6,7 @@ function showForm(formType) {
         
     // Handle form submissions
     document.querySelector(".login-Form").addEventListener("submit", async function (e) {
-        e.preventDefault(); // Prevent form submission
+        e.preventDefault();
         const formData = new FormData(this);
         const password = formData.get("password");
 
@@ -14,6 +14,13 @@ function showForm(formType) {
             showAlert("❌ Password must be at least 8 characters long.");
             return;
         }
+
+        const loginButton = document.getElementById("loginBtn");
+        const loginSpinner = document.getElementById("loginSpinner");
+
+        loginButton.disabled = true;
+        loginSpinner.classList.remove("d-none");
+
 
         try {
             const response = await fetch("http://127.0.0.1:8000/admins/api/user/login/", {
@@ -37,6 +44,9 @@ function showForm(formType) {
 
         } catch (error) {
             showAlert("❌ Server is not responding. Please try again later.");
+        } finally {
+            loginButton.disabled = false;
+            loginSpinner.classList.add("d-none");
         }
     });
 
@@ -55,6 +65,14 @@ function showForm(formType) {
             showAlert("❌ Username must not be greater 9 characters long.");
             return;
         }
+
+        const signUpButton = document.getElementById("signUpBtn");
+        const signUpSpinner = document.getElementById("signUpSpinner");
+
+        signUpButton.disabled = true;
+        signUpSpinner.classList.remove("d-none");
+
+
         try {
             const response = await fetch("http://127.0.0.1:8000/admins/api/user/create/", {
                 method: "POST",
@@ -83,6 +101,9 @@ function showForm(formType) {
 
         } catch (error) {
             showAlert("❌ Server is not responding. Please try again later.");
+        }finally {
+            signUpButton.disabled = false;
+            loginSpinner.classList.add("d-none");
         }
     });
         

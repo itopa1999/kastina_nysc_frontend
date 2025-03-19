@@ -1,13 +1,4 @@
-const token = localStorage.getItem('access_token');
-    if (!token) {
-        showAlert('🔐 Login is required.');
-        setTimeout(() => {
-            window.location.href = "login.html";
-        }, 2000);
-    }
-
-    
-    async function fetchGroups() {
+   async function fetchGroups() {
         try {
             const response = await fetch(`http://127.0.0.1:8000/chat/api/chat/`,{
                 method: 'GET',

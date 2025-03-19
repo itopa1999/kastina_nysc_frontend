@@ -1,11 +1,3 @@
-const token = localStorage.getItem('access_token');
-    if (!token) {
-        showAlert('🔐 Login is required.');
-        setTimeout(() => {
-            window.location.href = "login.html";
-        }, 2000);
-    }
-
     const params = new URLSearchParams(window.location.search);
     const postId = params.get("id");
     if (!postId){
@@ -95,7 +87,9 @@ const token = localStorage.getItem('access_token');
                  -ms-overflow-style: none;" id="comments-list-${post.id}"></div>
                 <div class="new-comment" style="display: flex; align-items: center; gap: 8px;">
                     <input id="new-comment-${post.id}" placeholder="Write a comment..." required>
-                    <button onclick="postComment(${post.id})">Comment</button>
+                    <button onclick="postComment(${post.id})" id="commentBtn-${post.id}">Comment 
+                        <span class="spinner-border spinner-border-sm d-none" id="commentSpinner-${post.id}" role="status" aria-hidden="true"></span>
+                    </button>
                 </div>
             </div>
             
@@ -123,21 +117,33 @@ const token = localStorage.getItem('access_token');
             showAlert('❌ comment cannot be empty')
             return;
         }
-        const response = await fetch(`http://127.0.0.1:8000/forum/api/home/create/post/comment/`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ content: newCommentContent, post: postId})
-        });
+        const commentButton = document.getElementById(`commentBtn-${postId}`);
+        const commentSpinner = document.getElementById(`commentSpinner-${postId}`);
 
-        if (response.ok) {
-            fetchComments(postId);
-            document.getElementById(`new-comment-${postId}`).value = '';
-            showAlert('✅ commented')
-        } else {
-            showAlert('❌ Failed to post comment');
+        commentButton.disabled = true;
+        commentSpinner.classList.remove("d-none");
+        try{
+            const response = await fetch(`http://127.0.0.1:8000/forum/api/home/create/post/comment/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content: newCommentContent, post: postId})
+            });
+
+            if (response.ok) {
+                fetchComments(postId);
+                document.getElementById(`new-comment-${postId}`).value = '';
+                showAlert('✅ commented')
+            } else {
+                showAlert('❌ Failed to post comment');
+            }
+        }catch (error) {
+            showAlert("❌ Server is not responding. Please try again later.");
+        }finally {
+            commentButton.disabled = false;
+            commentSpinner.classList.add("d-none");
         }
     }
 
