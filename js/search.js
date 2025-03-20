@@ -1,6 +1,6 @@
 async function fetchQuery(query) {
     try {
-        const response = await fetch(`http://127.0.0.1:8000/forum/api/user/search/?query=${query}`, {
+        const response = await fetch(`https://lucky1999.pythonanywhere.com/forum/api/user/search/?query=${query}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -141,7 +141,7 @@ document.querySelector(".search-box").addEventListener("submit", async function 
 
 async function fetchTrending() {
     try {
-        const response = await fetch('http://127.0.0.1:8000/forum/api/home/get/trending/posts/', {
+        const response = await fetch('https://lucky1999.pythonanywhere.com/forum/api/home/get/trending/posts/', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,

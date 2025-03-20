@@ -10,7 +10,7 @@
 
     async function fetchPostDetails() {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/forum/api/post/details/${postId}/`, {
+            const response = await fetch(`https://lucky1999.pythonanywhere.com/forum/api/post/details/${postId}/`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -123,7 +123,7 @@
         commentButton.disabled = true;
         commentSpinner.classList.remove("d-none");
         try{
-            const response = await fetch(`http://127.0.0.1:8000/forum/api/home/create/post/comment/`, {
+            const response = await fetch(`https://lucky1999.pythonanywhere.com/forum/api/home/create/post/comment/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -150,7 +150,7 @@
     // Function to fetch comments of a post
     async function fetchComments(postId) {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/forum/api/home/get/post/${postId}/comments/`,{
+            const response = await fetch(`https://lucky1999.pythonanywhere.com/forum/api/home/get/post/${postId}/comments/`,{
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -216,7 +216,7 @@
         const currentCount = parseInt(countSpan.textContent.replace(/[^\d.-]/g, ''));
         countSpan.textContent = formatNumber(heartIcon.classList.contains('liked') ? currentCount + 1 : currentCount - 1);
         
-        fetch(`http://127.0.0.1:8000/forum/api/home/post/${postId}/like/`, { 
+        fetch(`https://lucky1999.pythonanywhere.com/forum/api/home/post/${postId}/like/`, { 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -261,7 +261,7 @@
 
 async function fetchTrending() {
     try {
-        const response = await fetch('http://127.0.0.1:8000/forum/api/home/get/trending/posts/', {
+        const response = await fetch('https://lucky1999.pythonanywhere.com/forum/api/home/get/trending/posts/', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,

@@ -23,7 +23,7 @@ function showForm(formType) {
 
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/admins/api/user/login/", {
+            const response = await fetch("https://lucky1999.pythonanywhere.com/admins/api/user/login/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -74,7 +74,7 @@ function showForm(formType) {
 
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/admins/api/user/create/", {
+            const response = await fetch("https://lucky1999.pythonanywhere.com/admins/api/user/create/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

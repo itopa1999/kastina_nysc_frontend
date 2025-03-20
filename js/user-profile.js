@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById('user-info').innerHTML = '🧑‍🦱@corper_'+username +' post'
 
-    const initialUrl = `http://127.0.0.1:8000/forum/api/user/get/user/${username}/posts/`;
+    const initialUrl = `https://lucky1999.pythonanywhere.com/forum/api/user/get/user/${username}/posts/`;
     let nextPageUrl = initialUrl;
 
     window.loadMorePosts = function(e) {
@@ -199,7 +199,7 @@ document.addEventListener("DOMContentLoaded", function() {
         commentButton.disabled = true;
         commentSpinner.classList.remove("d-none");
         try{
-            const response = await fetch(`http://127.0.0.1:8000/forum/api/home/create/post/comment/`, {
+            const response = await fetch(`https://lucky1999.pythonanywhere.com/forum/api/home/create/post/comment/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Function to fetch comments of a post
     async function fetchComments(postId) {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/forum/api/home/get/post/${postId}/comments/`,{
+            const response = await fetch(`https://lucky1999.pythonanywhere.com/forum/api/home/get/post/${postId}/comments/`,{
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -297,7 +297,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const currentCount = parseInt(countSpan.textContent.replace(/[^\d.-]/g, ''));
         countSpan.textContent = formatNumber(heartIcon.classList.contains('liked') ? currentCount + 1 : currentCount - 1);
         
-        fetch(`http://127.0.0.1:8000/forum/api/home/post/${postId}/like/`, { 
+        fetch(`https://lucky1999.pythonanywhere.com/forum/api/home/post/${postId}/like/`, { 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -345,7 +345,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     async function fetchTrending() {
         try {
-            const response = await fetch('http://127.0.0.1:8000/forum/api/home/get/trending/posts/', {
+            const response = await fetch('https://lucky1999.pythonanywhere.com/forum/api/home/get/trending/posts/', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,

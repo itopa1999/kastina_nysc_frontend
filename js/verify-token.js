@@ -10,7 +10,7 @@
     }
 
     try {
-        const response = await fetch("http://127.0.0.1:8000/admins/api/user/verify/", {
+        const response = await fetch("https://lucky1999.pythonanywhere.com/admins/api/user/verify/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -47,7 +47,7 @@ async function resendToken(){
     }
 
     try {
-        const response = await fetch("http://127.0.0.1:8000/admins/api/user/resend/verification/token/", {
+        const response = await fetch("https://lucky1999.pythonanywhere.com/admins/api/user/resend/verification/token/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

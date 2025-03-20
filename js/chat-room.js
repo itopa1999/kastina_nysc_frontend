@@ -17,7 +17,7 @@ if (!groupName) {
 
 async function fetchGroups() {
     try {
-        const response = await fetch(`http://127.0.0.1:8000/chat/api/chat/`, {
+        const response = await fetch(`https://lucky1999.pythonanywhere.com/chat/api/chat/`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -78,7 +78,7 @@ fetchGroups();
 
 async function fetchChatMessages(groupName) {
     try {
-        const response = await fetch(`http://127.0.0.1:8000/chat/api/chat/get/messages/${groupName}/`, {
+        const response = await fetch(`https://lucky1999.pythonanywhere.com/chat/api/chat/get/messages/${groupName}/`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,

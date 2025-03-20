@@ -16,7 +16,7 @@ document.querySelector(".ForgetPassword-Form").addEventListener("submit", async 
 
 
     try {
-        const response = await fetch("http://127.0.0.1:8000/admins/api/user/forget/password/", {
+        const response = await fetch("https://lucky1999.pythonanywhere.com/admins/api/user/forget/password/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -63,7 +63,7 @@ document.querySelector('.confirmToken-Form').addEventListener('submit', async fu
 
         
         try {
-            const response = await fetch("http://127.0.0.1:8000/admins/api/user/forget/password/verify/", {
+            const response = await fetch("https://lucky1999.pythonanywhere.com/admins/api/user/forget/password/verify/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

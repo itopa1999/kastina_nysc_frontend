@@ -1,6 +1,6 @@
 document.getElementById('user-info').innerHTML = '🧑‍🦱@corper_'+username +' activities'
 
-const initialUrl = `http://127.0.0.1:8000/forum/api/user/get/user/${username}/posts/`;
+const initialUrl = `https://lucky1999.pythonanywhere.com/forum/api/user/get/user/${username}/posts/`;
 let nextPageUrl = initialUrl;
 
 window.loadMorePosts = function(e) {
@@ -186,7 +186,7 @@ function handleFeedPopulation(feedElement, posts, append, feedName) {
         commentButton.disabled = true;
         commentSpinner.classList.remove("d-none");
         try{
-            const response = await fetch(`http://127.0.0.1:8000/forum/api/home/create/post/comment/`, {
+            const response = await fetch(`https://lucky1999.pythonanywhere.com/forum/api/home/create/post/comment/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -214,7 +214,7 @@ function handleFeedPopulation(feedElement, posts, append, feedName) {
     // Function to fetch comments of a post
     async function fetchComments(postId) {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/forum/api/home/get/post/${postId}/comments/`,{
+            const response = await fetch(`https://lucky1999.pythonanywhere.com/forum/api/home/get/post/${postId}/comments/`,{
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -284,7 +284,7 @@ function handleFeedPopulation(feedElement, posts, append, feedName) {
         const currentCount = parseInt(countSpan.textContent.replace(/[^\d.-]/g, ''));
         countSpan.textContent = formatNumber(heartIcon.classList.contains('liked') ? currentCount + 1 : currentCount - 1);
         
-        fetch(`http://127.0.0.1:8000/forum/api/home/post/${postId}/like/`, { 
+        fetch(`https://lucky1999.pythonanywhere.com/forum/api/home/post/${postId}/like/`, { 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -332,7 +332,7 @@ function handleFeedPopulation(feedElement, posts, append, feedName) {
 
     async function fetchTrending() {
         try {
-            const response = await fetch('http://127.0.0.1:8000/forum/api/home/get/trending/posts/', {
+            const response = await fetch('https://lucky1999.pythonanywhere.com/forum/api/home/get/trending/posts/', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -393,7 +393,7 @@ function handleFeedPopulation(feedElement, posts, append, feedName) {
 
     document.getElementById('user-info').addEventListener('click', async function() {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/forum/api/user/get/user/profile/${username}/activities/`, {
+            const response = await fetch(`https://lucky1999.pythonanywhere.com/forum/api/user/get/user/profile/${username}/activities/`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,

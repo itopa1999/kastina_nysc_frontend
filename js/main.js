@@ -291,7 +291,7 @@ function showChangePasswordModal() {
         changePasswordSpinner.classList.remove("d-none");
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/admins/api/user/change/password/", {
+            const response = await fetch("https://lucky1999.pythonanywhere.com/admins/api/user/change/password/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
