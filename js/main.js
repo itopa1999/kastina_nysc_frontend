@@ -177,6 +177,67 @@ function timeAgoFormatter(date) {
 }
 
 
+function calculateUpdateInterval(timestamp) {
+    const now = new Date();
+    const createdAt = new Date(timestamp);
+    const diffInSeconds = Math.floor((now - createdAt) / 1000);
+
+    if (diffInSeconds < 60) {
+        return 1000;  // Update every second
+    } else if (diffInSeconds < 3600) {
+        return 60000;  // Update every minute
+    } else if (diffInSeconds < 86400) {
+        return 3600000;  // Update every hour
+    } else if (diffInSeconds < 2592000) { // 30 days
+        return 86400000;  // Update every day
+    } else if (diffInSeconds < 31536000) { // 365 days
+        return 2592000000;  // Update every month
+    }
+    return 31536000000;  // Update every year
+}
+
+
+
+// Function to calculate the next interval for updates
+function calculateUpdateInterval(timestamp) {
+    const now = new Date();
+    const createdAt = new Date(timestamp);
+    const diffInSeconds = Math.floor((now - createdAt) / 1000);
+
+    if (diffInSeconds < 60) {
+        return 1000;  // Update every second
+    } else if (diffInSeconds < 3600) {
+        return 60000;  // Update every minute
+    } else if (diffInSeconds < 86400) {
+        return 3600000;  // Update every hour
+    } else if (diffInSeconds < 2592000) { // 30 days
+        return 86400000;  // Update every day
+    } else if (diffInSeconds < 31536000) { // 365 days
+        return 2592000000;  // Update every month
+    }
+    return 31536000000;  // Update every year
+}
+
+
+function updateTimeAgo() {
+    document.querySelectorAll('.time-ago').forEach(element => {
+        const timestamp = element.getAttribute('data-timestamp');
+        if (timestamp) {
+            element.innerHTML = `· ${timeAgoFormatter(timestamp)}`;
+        }
+
+        const interval = calculateUpdateInterval(timestamp);
+
+
+    });
+
+    
+}
+
+// Run every 30 seconds
+setInterval(updateTimeAgo, 30000);
+
+
 function formatNumber(number) {
     if (number === 0) {
         return '0';
@@ -301,6 +362,9 @@ function showChangePasswordModal() {
             });
 
             const data = await response.json();
+
+            changePasswordButton.disabled = false;
+            changePasswordSpinner.classList.add("d-none");
 
             if (!response.ok) {
                 showAlert('❌ ' + data.error || "❌ Something went wrong! Please try again.");

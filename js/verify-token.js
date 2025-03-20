@@ -39,12 +39,17 @@
     }
 });
 
-async function resendToken(){
+async function resendToken(element){
     const email = localStorage.getItem("access_email")
     if(email === null){
         showAlert("❌ cannot find email, please contact support");
         return;
     }
+
+    const originalText = element.innerHTML;
+
+    element.innerHTML = '<span class="spinner"></span> Sending...';
+    element.disabled = true; 
 
     try {
         const response = await fetch("https://lucky1999.pythonanywhere.com/admins/api/user/resend/verification/token/", {
@@ -56,7 +61,8 @@ async function resendToken(){
         });
 
         const data = await response.json();
-
+        element.innerHTML = originalText;
+        element.disabled = false;
         if (!response.ok) {
             showAlert('❌ ' +data.error || "❌ Something went wrong! Please try again.");
             return;
@@ -65,6 +71,9 @@ async function resendToken(){
 
     } catch (error) {
         showAlert("❌ Server is not responding. Please try again later.");
+    }finally {
+        element.innerHTML = originalText;
+        element.disabled = false;
     }
 
 }

@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <strong>@${post.user}</strong>
                     </a>
                     <span class="text-mute">· ${post.category}</span>
-                    <span class="text-mute">· ${timeAgoFormatter(post.created_at)}</span>
+                    <span  class="text-mute time-ago" data-timestamp="${post.created_at}">· ${timeAgoFormatter(post.created_at)}</span>
                 </div>
             </div>
             <div class="mt-3">
@@ -208,6 +208,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 body: JSON.stringify({ content: newCommentContent, post: postId})
             });
 
+            commentButton.disabled = false;
+            commentSpinner.classList.add("d-none");
+
             if (response.ok) {
                 fetchComments(postId);
                 document.getElementById(`new-comment-${postId}`).value = '';
@@ -265,7 +268,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <a href="user-profile.html?username=${comment.user}" class="comment-user text-mute">
                                     <strong>@${comment.user}</strong>
                                 </a>
-                                <span class="text-mute comment-time">· ${timeAgoFormatter(comment.created_at)}</span>
+                                <span  class="text-mute comment-time time-ago" data-timestamp="${comment.created_at}">· ${timeAgoFormatter(comment.created_at)}</span>
                             </div>
                             <p class="comment-content text-mute">${comment.content}</p>
                         </div>

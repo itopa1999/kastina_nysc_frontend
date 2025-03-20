@@ -24,7 +24,13 @@ document.querySelector(".ForgetPassword-Form").addEventListener("submit", async 
             body: JSON.stringify(Object.fromEntries(formData.entries()))
         });
 
+        
+
         const data = await response.json();
+        
+        forgetButton.disabled = false;
+        forgetSpinner.classList.add("d-none");
+
         if (!response.ok) {
             showAlert('❌ '+ data.error || "❌ Something went wrong! Please try again.");
             return;
@@ -72,6 +78,9 @@ document.querySelector('.confirmToken-Form').addEventListener('submit', async fu
             });
 
             const data = await response.json();
+
+            confirmButton.disabled = false;
+            confirmSpinner.classList.add("d-none");
 
             if (!response.ok) {
                 showAlert('❌ ' + data.error || "❌ Something went wrong! Please try again.");

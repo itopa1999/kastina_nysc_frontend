@@ -117,7 +117,7 @@ async function fetchChatMessages(groupName) {
                 <div>
                     <div class="message-content">
                         <p class="mb-0" style="white-space: pre-line; word-wrap: break-word;">${message.content}</p>
-                        <span class="message-time">${timeAgoFormatter(message.timestamp)} . @${message.user}</span>
+                        <span  class="message-time time-ago" data-timestamp="${message.timestamp}">${timeAgoFormatter(message.timestamp)} . @${message.user}</span>
                     </div>
                 </div>
             `;
@@ -213,7 +213,7 @@ function addMessageToChat(data) {
         <div>
             <div class="message-content">
                 <p class="mb-0" style="white-space: pre-line; word-wrap: break-word;">${data.message}</p>
-                <span class="message-time">${timeAgoFormatter(data.timestamp)} . @${data.user}</span>
+                <span  class="message-time time-ago" data-timestamp="${data.timestamp}">${timeAgoFormatter(data.timestamp)} . @${data.user}</span>
             </div>
         </div>
     `;

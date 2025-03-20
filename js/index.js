@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <strong>@${post.user}</strong>
                     </a>
                     <span class="text-mute">· ${post.category}</span>
-                    <span class="text-mute">· ${timeAgoFormatter(post.created_at)}</span>
+                    <span  class="text-mute time-ago" data-timestamp="${post.created_at}">· ${timeAgoFormatter(post.created_at)}</span>
                 </div>
             </div>
             <div class="mt-3">
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function() {
             </div>
             <div class="engagement-metrics" style="cursor: pointer;">
                 <span class="comment-btn" onclick="toggleComments(${post.id})"><i class="fas fa-comment"></i>
-                    <span class="engagement-count">${formatNumber(post.total_comment)}</span>
+                    <span class="engagement-count comment-count-${post.id}">${formatNumber(post.total_comment)}</span>
                 </span>
                 <span class="like-btn" onclick="handleLike(${post.id})">
                     <i class="fas fa-heart ${post.has_liked ? 'liked' : ''}"></i>
@@ -183,6 +183,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
         commentButton.disabled = true;
         commentSpinner.classList.remove("d-none");
+
+        const countSpan = document.querySelector(`.comment-count-${postId}`);
+
+        const currentCount = parseInt(countSpan.textContent.replace(/[^\d.-]/g, ''));
+        countSpan.textContent = formatNumber(currentCount + 1);
+
+
         try{
             const response = await fetch(`https://lucky1999.pythonanywhere.com/forum/api/home/create/post/comment/`, {
                 method: 'POST',
@@ -193,14 +200,19 @@ document.addEventListener("DOMContentLoaded", function() {
                 body: JSON.stringify({ content: newCommentContent, post: postId})
             });
 
+            commentButton.disabled = false;
+            commentSpinner.classList.add("d-none");
+
             if (response.ok) {
                 fetchComments(postId);
                 document.getElementById(`new-comment-${postId}`).value = '';
                 showAlert('✅ commented')
             } else {
+                countSpan.textContent = formatNumber(currentCount);
                 showAlert('❌ Failed to post comment');
             }
         }catch (error) {
+            countSpan.textContent = formatNumber(currentCount);
             showAlert("❌ Server is not responding. Please try again later.");
         }finally {
             commentButton.disabled = false;
@@ -314,7 +326,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <a href="user-profile.html?username=${comment.user}" class="comment-user text-mute">
                                     <strong>@${comment.user}</strong>
                                 </a>
-                                <span class="text-mute comment-time">· ${timeAgoFormatter(comment.created_at)}</span>
+                                <span  class="text-mute comment-time time-ago" data-timestamp="${comment.created_at}">· ${timeAgoFormatter(comment.created_at)}</span>
                             </div>
                             <p class="comment-content text-mute">${comment.content}</p>
                         </div>
@@ -453,6 +465,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 },
                 body: JSON.stringify(postData),
             });
+
+            postButton.disabled = false;
+            postSpinner.classList.add("d-none");
 
             if (!response.ok){
                 showAlert("❌ Failed to post");

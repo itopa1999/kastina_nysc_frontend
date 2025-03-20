@@ -31,6 +31,9 @@ function showForm(formType) {
                 body: JSON.stringify(Object.fromEntries(formData.entries()))
             });
 
+            loginButton.disabled = false;
+            loginSpinner.classList.add("d-none");
+
             const data = await response.json();
 
             if (!response.ok) {
@@ -84,6 +87,9 @@ function showForm(formType) {
 
             const data = await response.json();
 
+            signUpButton.disabled = false;
+            signUpSpinner.classList.add("d-none");
+
             if (!response.ok) {
                 showAlert('❌ ' + data.error || "❌ Something went wrong! Please try again.");
                 return;
@@ -103,7 +109,7 @@ function showForm(formType) {
             showAlert("❌ Server is not responding. Please try again later.");
         }finally {
             signUpButton.disabled = false;
-            loginSpinner.classList.add("d-none");
+            signUpSpinner.classList.add("d-none");
         }
     });
         
