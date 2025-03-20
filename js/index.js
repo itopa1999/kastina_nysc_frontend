@@ -98,11 +98,12 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
     function createPostCard(post) {
+        console.log(post)
         const postCard = document.createElement('div');
         postCard.classList.add('post-card');
     
         // Handle "Show More" button for long content
-        const showMoreButton = post.short_content.length > 199 ? `<div class="show-more" style="cursor: pointer;">Show more</div>` : '';
+        const showMoreButton = post.short_content.length > 99 ? `<div class="show-more" style="cursor: pointer;">Show more</div>` : '';
     
         postCard.innerHTML = `
             <div class="d-flex align-items-center gap-2">

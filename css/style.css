@@ -188,8 +188,8 @@ body.dark-mode .engagement-metrics {
 }
 
 .content-preview {
-    max-height: 100px;
-    overflow: hidden;
+    max-height: 118px;
+    /* overflow: hidden; */
     position: relative;
 }
 
